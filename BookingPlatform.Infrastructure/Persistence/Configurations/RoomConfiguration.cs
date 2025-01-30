@@ -8,9 +8,9 @@ namespace BookingPlatform.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Room> builder)
         {
+            builder.ToTable("Rooms");
             builder.HasKey(r => r.RoomId);
 
-            // Relationships
             builder.HasOne(r => r.Hotel)
                 .WithMany(h => h.Rooms)
                 .HasForeignKey(r => r.HotelId);
@@ -21,19 +21,20 @@ namespace BookingPlatform.Infrastructure.Configurations
             builder.Property(r => r.Status)
                 .HasConversion<string>();
 
-            // Constraints
             builder.Property(r => r.Number)
                 .IsRequired()
-                .HasMaxLength(20); // e.g., "Room 101A"
+                .HasMaxLength(20);
 
             builder.Property(r => r.PricePerNight)
-                .HasColumnType("decimal(18,2)"); // Precise currency storage
+                .HasColumnType("decimal(18,2)");
 
             builder.Property(r => r.Capacity)
                 .IsRequired();
-
-            // Indexes
-            builder.HasIndex(r => new { r.HotelId, r.Number }).IsUnique(); // Unique room number per hotel
-        }
+        
+            builder.HasMany(r => r.Bookings)
+                .WithOne(b => b.Room)
+                .HasForeignKey(b => b.RoomId)
+                .OnDelete(DeleteBehavior.Restrict);
+            }
     }
 }

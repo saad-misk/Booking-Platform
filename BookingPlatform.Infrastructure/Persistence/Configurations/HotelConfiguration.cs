@@ -8,46 +8,23 @@ namespace BookingPlatform.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Hotel> builder)
         {
-            // Primary Key
-            builder.HasKey(h => h.HotelId);
-
-            // Properties
-            builder.Property(h => h.Name)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            builder.Property(h => h.ReviewsRating)
-                .HasColumnType("decimal(3,2)");
-
-            builder.Property(h => h.Longitude)
-                .HasColumnType("decimal(9,6)");
-
-            builder.Property(h => h.Latitude)
-                .HasColumnType("decimal(9,6)");
-
-            builder.Property(h => h.Description)
-                .HasMaxLength(1000);
-
-            builder.Property(h => h.PhoneNumber)
-                .IsRequired()
-                .HasMaxLength(20);
-
-            builder.Property(h => h.StarRating)
-                .IsRequired();
-
-            // Relationships
+            builder.ToTable("Hotels");
+            
             builder.HasMany(h => h.Rooms)
                 .WithOne(r => r.Hotel)
                 .HasForeignKey(r => r.HotelId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict); 
 
-            builder.HasOne(h => h.City)
-                .WithMany(c => c.Hotels)
-                .HasForeignKey(h => h.CityId);
-
-            builder.HasMany(h => h.Rooms)
-                .WithOne(r => r.Hotel)
-                .HasForeignKey(r => r.HotelId);
+            builder.HasMany(h => h.Bookings)
+                .WithOne(b => b.Hotel)
+                .HasForeignKey(b => b.HotelId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.HasMany(h => h.Gallery)
+            .WithOne()
+            .HasForeignKey(i => i.HotelId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

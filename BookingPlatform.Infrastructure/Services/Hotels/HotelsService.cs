@@ -119,7 +119,10 @@ namespace BookingPlatform.Infrastructure.Services.Hotels
                     Id = hotel.HotelId,
                     Name = hotel.Name,
                     City = hotel.City.Name,
-                    ThumbnailUrl = hotel.Thumbnail?.Url ?? string.Empty,
+                    ThumbnailUrl = hotel.Gallery
+                        .FirstOrDefault(i => i.IsThumbnail)?.Url 
+                        ?? hotel.Gallery.FirstOrDefault()?.Url 
+                        ?? string.Empty,
                     OriginalPrice = hotel.Rooms.FirstOrDefault()?.PricePerNight ?? 0,
                     DiscountedPrice = (hotel.Rooms.FirstOrDefault()?.PricePerNight ?? 0) * 0.9m,
                     Rating = hotel.ReviewsRating
@@ -144,7 +147,10 @@ namespace BookingPlatform.Infrastructure.Services.Hotels
                 Name = hotel.Name,
                 Description = hotel.Description ?? string.Empty,
                 StarRating = hotel.StarRating,
-                ThumbnailUrl = hotel.Thumbnail?.Url ?? string.Empty,
+                ThumbnailUrl = hotel.Gallery
+                        .FirstOrDefault(i => i.IsThumbnail)?.Url 
+                        ?? hotel.Gallery.FirstOrDefault()?.Url 
+                        ?? string.Empty,
                 StartingPrice = hotel.Rooms.FirstOrDefault()?.PricePerNight ?? 0,
                 AvailableRoomTypes = hotel.Rooms
                     .Select(r => r.RoomClass.ToString())

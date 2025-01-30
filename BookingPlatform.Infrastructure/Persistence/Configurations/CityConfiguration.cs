@@ -17,6 +17,12 @@ namespace BookingPlatform.Infrastructure.Configurations
             builder.Property(c => c.Country)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.HasMany(c => c.Images)
+            .WithOne()
+            .HasForeignKey(i => i.CityId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

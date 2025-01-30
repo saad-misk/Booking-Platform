@@ -131,7 +131,7 @@ namespace BookingPlatform.Infrastructure.Services
                 LastName = lastName,
                 Email = email,
                 UserName = email,
-                PasswordHash = _passwordHasher.HashPassword(null!, password)
+                PasswordHash = _passwordHasher.HashPassword(new User(), password)
             };
         }
     }

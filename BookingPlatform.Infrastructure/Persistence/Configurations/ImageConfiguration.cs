@@ -8,38 +8,27 @@ namespace BookingPlatform.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Image> builder)
         {
+            builder.ToTable("Images");
+            
             builder.HasKey(i => i.ImageId);
-
-            // Constraints
-            builder.Property(i => i.Title)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            builder.Property(i => i.Url)
-                .IsRequired()
-                .HasMaxLength(500); // For cloud storage URLs
-
-            // Relationships
-            // Hotel Relationship
+            
             builder.HasOne(i => i.Hotel)
                 .WithMany(h => h.Gallery)
                 .HasForeignKey(i => i.HotelId)
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // City Relationship
             builder.HasOne(i => i.City)
                 .WithMany(c => c.Images)
                 .HasForeignKey(i => i.CityId)
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // Room Relationship
             builder.HasOne(i => i.Room)
                 .WithMany(r => r.Images)
                 .HasForeignKey(i => i.RoomId)
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

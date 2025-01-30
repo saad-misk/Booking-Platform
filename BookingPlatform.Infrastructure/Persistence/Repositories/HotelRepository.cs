@@ -24,7 +24,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
             pageNumber = Math.Max(pageNumber, 1); // Ensure pageNumber is at least 1
 
             var query = _context.Hotels
-                .Include(h => h.Thumbnail)
+                .Include(h => h.Gallery)
                 .Include(h => h.Rooms)
                 .AsQueryable();
 
@@ -49,7 +49,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _context.Hotels
-                .Include(h => h.Thumbnail)
+                .Include(h => h.Gallery)
                 .Include(h => h.Gallery)
                 .Include(h => h.Rooms)
                     .ThenInclude(r => r.Images)

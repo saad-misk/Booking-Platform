@@ -3,7 +3,6 @@ namespace BookingPlatform.Domain.Entities
     public class City
     {
         public Guid CityId { get; set; }
-        public Image? Thumbnail { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public string PostOffice { get; set; } = string.Empty;

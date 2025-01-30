@@ -5,7 +5,6 @@ namespace BookingPlatform.Domain.Entities
         public Guid HotelId { get; set; }
         public Guid CityId { get; set; }
         public City City { get; set; }
-        public Image? Thumbnail { get; set; }
         public ICollection<Image> Gallery { get; set; } = new List<Image>();
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();

@@ -55,7 +55,7 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                 CityCode = city.CityCode,
                 HotelsCount = city.Hotels.Count,
                 BookingsCount = city.BookingsCount,
-                Thumbnail = city.Thumbnail
+                Thumbnail = city.Images.FirstOrDefault(i => i.IsThumbnail)
             };
         }
 

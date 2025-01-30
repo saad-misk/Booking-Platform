@@ -9,6 +9,7 @@ namespace BookingPlatform.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.ToTable("Users");
             // Primary Key
             builder.HasKey(u => u.UserId);
 
@@ -36,7 +37,6 @@ namespace BookingPlatform.Infrastructure.Configurations
                     CreatedAtUtc = new DateTime(2023, 10, 1)
                 });
 
-            // Properties
             builder.Property(u => u.UserName)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -63,6 +63,11 @@ namespace BookingPlatform.Infrastructure.Configurations
 
             builder.Property(u => u.CreatedAtUtc)
                 .IsRequired();
+
+            builder.HasMany(u => u.Bookings)
+            .WithOne(b => b.User)
+            .HasForeignKey(b => b.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
