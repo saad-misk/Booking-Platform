@@ -51,6 +51,10 @@ namespace BookingPlatform.Infrastructure.Persistence{
         
         services.AddScoped<IUnitOfWork, UnitOfWork>();      
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
+        services.AddScoped<IHotelsRepository, HotelsRepository>();
+        services.AddScoped<ICitiesRepository, CitiesRepository>();
+        services.AddScoped<IRoomsRepository, RoomsRepository>();
         return services;
 
     }
