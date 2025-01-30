@@ -7,6 +7,12 @@ using BookingPlatform.Infrastructure.Services;
 using BookingPlatform.Infrastructure.Services.Hotels;
 using BookingPlatform.Infrastructure.Services.Bookings;
 using BookingPlatform.Infrastructure.Services.Cities;
+using BookingPlatform.Infrastructure.Services.Cart;
+using BookingPlatform.Infrastructure.Services.Checkout;
+using BookingPlatform.Application.Interfaces.HelperServices;
+using BookingPlatform.Infrastructure.Services.Payments;
+using BookingPlatform.Domain.Models;
+using BookingPlatform.Infrastructure.Services.HelperServices;
 
 namespace BookingPlatform.Infrastructure{
     public static class DependencyInjection
@@ -29,7 +35,15 @@ namespace BookingPlatform.Infrastructure{
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IHotelsService, HotelsService>();
             services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ISingleItemCheckoutService, CheckoutService>();
             services.AddScoped<ICitiesService, CitiesService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
+            
+            services.AddScoped<IPaymentService, StripePaymentService>();
+            
+            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
     }
