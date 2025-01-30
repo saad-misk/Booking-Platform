@@ -77,11 +77,17 @@ namespace BookingPlatform.API.Middlewares
 
             var statusCode = customException switch
             {
-                UserNotFoundException => 401,
-                InvalidPasswordException => 401,
-                DuplicateEmailException => 409,
-                UserRegistrationException => 400,
-                _ => 500
+                UserNotFoundException => StatusCodes.Status404NotFound,
+                InvalidPasswordException => StatusCodes.Status400BadRequest,
+                DuplicateEmailException => StatusCodes.Status409Conflict,
+                UserRegistrationException => StatusCodes.Status400BadRequest,
+                ConflictException => StatusCodes.Status409Conflict,
+                BadRequestException => StatusCodes.Status400BadRequest,
+                PaymentException => StatusCodes.Status402PaymentRequired,
+                UnauthorizedException => StatusCodes.Status401Unauthorized,
+                NotFoundException => StatusCodes.Status404NotFound,
+                CustomException => StatusCodes.Status500InternalServerError,
+                _ => StatusCodes.Status500InternalServerError
             };
 
             return (
