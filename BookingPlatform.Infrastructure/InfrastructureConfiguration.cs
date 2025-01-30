@@ -4,6 +4,9 @@ using BookingPlatform.Infrastructure.Persistence;
 using BookingPlatform.Infrastructure.JWT;
 using BookingPlatform.Application.Interfaces.Services;
 using BookingPlatform.Infrastructure.Services;
+using BookingPlatform.Infrastructure.Services.Hotels;
+using BookingPlatform.Infrastructure.Services.Bookings;
+using BookingPlatform.Infrastructure.Services.Cities;
 
 namespace BookingPlatform.Infrastructure{
     public static class DependencyInjection
@@ -24,6 +27,9 @@ namespace BookingPlatform.Infrastructure{
             IConfiguration configuration)
         {
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IHotelsService, HotelsService>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<ICitiesService, CitiesService>();
             return services;
         }
     }
