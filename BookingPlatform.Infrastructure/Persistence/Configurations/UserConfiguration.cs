@@ -21,7 +21,7 @@ namespace BookingPlatform.Infrastructure.Configurations
                     FirstName = "Admin",
                     LastName = "User",
                     Email = "admin@bookingplatform.com",
-                    Password = "AQAAAAEAACcQAAAAEByh5Z5z7g7z8X6Q3wY1v2Ee.7z8X6Q3wY1v2Ee", //Admin123!
+                    PasswordHash = "AQAAAAEAACcQAAAAEByh5Z5z7g7z8X6Q3wY1v2Ee.7z8X6Q3wY1v2Ee", //Admin123!
                     CreatedAtUtc = new DateTime(2023, 10, 1)
                 },
                 new User
@@ -32,7 +32,7 @@ namespace BookingPlatform.Infrastructure.Configurations
                     FirstName = "John",
                     LastName = "Doe",
                     Email = "john.doe@example.com",
-                    Password = "AQAAAAEAACcQAAAAEByh5Z5z7g7z8X6Q3wY1v2Ee.7z8X6Q3wY1v2Ee", // John123!
+                    PasswordHash = "AQAAAAEAACcQAAAAEByh5Z5z7g7z8X6Q3wY1v2Ee.7z8X6Q3wY1v2Ee", // John123!
                     CreatedAtUtc = new DateTime(2023, 10, 1)
                 });
 
@@ -57,7 +57,7 @@ namespace BookingPlatform.Infrastructure.Configurations
                 .IsRequired()
                 .HasMaxLength(255);
 
-            builder.Property(u => u.Password)
+            builder.Property(u => u.PasswordHash)
                 .IsRequired()
                 .HasMaxLength(255);
 

@@ -6,6 +6,6 @@ namespace BookingPlatform.Domain.Interfaces.Repositories
     {
         Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken = default);
         bool VerifyPassword(User user, string password);
-        Task CreateUserAsync(User user, CancellationToken cancellationToken = default);
+        Task<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default);
     }
 }

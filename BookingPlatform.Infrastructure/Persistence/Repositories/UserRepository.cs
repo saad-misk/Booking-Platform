@@ -39,13 +39,18 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
             return result == PasswordVerificationResult.Success;
         }
 
-        public async Task CreateUserAsync(
-            User user, 
-            CancellationToken cancellationToken = default
-        )
+        public async Task<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default)
         {
-            user.PasswordHash = _passwordHasher.HashPassword(user, user.PasswordHash);
-            await AddAsync(user, cancellationToken);
+            try
+            {
+                await _dbSet.AddAsync(user, cancellationToken);
+                return true; // Success
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create user");
+                return false; // Failure
+            }
         }
     }
 }

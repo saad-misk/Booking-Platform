@@ -10,8 +10,8 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
         : IRepository<T> where T : class
     {
         protected readonly DbSet<T> _dbSet = context.Set<T>();
-        private readonly AppDbContext _context = context;
-        private readonly ILogger<Repository<T>> _logger = logger;
+        protected readonly AppDbContext _context = context;
+        protected readonly ILogger<Repository<T>> _logger = logger;
 
         public async Task<T?> GetByIdAsync<TKey>(
             TKey id,
