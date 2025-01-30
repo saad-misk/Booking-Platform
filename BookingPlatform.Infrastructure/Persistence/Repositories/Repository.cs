@@ -66,6 +66,25 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
             }
         }
 
+        public async Task<int> CountAsync(
+            Expression<Func<T, bool>>? filter = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _dbSet.AsQueryable();
+                if (filter != null)
+                    query = query.Where(filter);
+                
+                return await query.CountAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to count {Entities}", typeof(T).Name);
+                throw;
+            }
+        }
+
         public async Task AddAsync(
             T entity,
             CancellationToken cancellationToken = default

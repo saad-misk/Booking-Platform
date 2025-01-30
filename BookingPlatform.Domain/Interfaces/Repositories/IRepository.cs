@@ -18,6 +18,11 @@ namespace BookingPlatform.Domain.Interfaces.Repositories
             CancellationToken cancellationToken = default
         );
 
+        Task<int> CountAsync(
+            Expression<Func<T, bool>>? filter = null,
+            CancellationToken cancellationToken = default
+        );
+
         Task AddAsync(
             T entity,
             CancellationToken cancellationToken = default
