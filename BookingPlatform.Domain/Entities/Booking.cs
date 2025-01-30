@@ -17,5 +17,6 @@ namespace BookingPlatform.Domain.Entities
         public DateTime CreatedAtUtc { get; set; }
         public string ConfirmationNumber { get; set; }= null!;
         public BookingStatus Status { get; set; }
+        public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
     }
 }

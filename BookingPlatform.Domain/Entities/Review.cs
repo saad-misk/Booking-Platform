@@ -7,7 +7,7 @@ namespace BookingPlatform.Domain.Entities
         public User Guest { get; set; }
         public Guid HotelId { get; set; }
         public Hotel Hotel { get; set; }
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
         public int Rating { get; set; }
         public DateTime CreatedAtUtc { get; set; }
     }

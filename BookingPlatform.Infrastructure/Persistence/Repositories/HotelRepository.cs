@@ -9,7 +9,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
 {
     public class HotelsRepository : Repository<Hotel>, IHotelsRepository
     {
-        public HotelsRepository(AppDbContext context, ILogger<Repository<Hotel>> logger) 
+        public HotelsRepository(AppDbContext context, ILogger<HotelsRepository> logger) 
             : base(context, logger) { }
 
         public async Task<(List<Hotel> Hotels, int TotalCount)> SearchHotelAsync(
@@ -70,9 +70,6 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        /// <summary>
-        /// Applies dynamic filters for searching hotels.
-        /// </summary>
         private static IQueryable<Hotel> ApplyFilters(
             IQueryable<Hotel> query,
             decimal? minPrice,

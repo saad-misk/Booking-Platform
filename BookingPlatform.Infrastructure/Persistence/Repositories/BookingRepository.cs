@@ -8,7 +8,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
 {
     public class BookingRepository : Repository<Booking>, IBookingRepository
     {
-        public BookingRepository(AppDbContext context, ILogger<Repository<Booking>> logger)
+        public BookingRepository(AppDbContext context, ILogger<BookingRepository> logger)
         : base(context, logger) { }
 
         public async Task<ICollection<Booking>> GetConflictingBookings(

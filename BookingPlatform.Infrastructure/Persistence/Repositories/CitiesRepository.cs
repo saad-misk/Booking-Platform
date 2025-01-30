@@ -10,7 +10,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
     {
         private const int TopVisitedCitiesCount = 5; 
 
-        public CitiesRepository(AppDbContext context, ILogger<Repository<City>> logger) 
+        public CitiesRepository(AppDbContext context, ILogger<CitiesRepository> logger) 
         : base(context, logger) { }
 
         public async Task<List<City>> GetTrendingDestinationsAsync(CancellationToken cancellationToken = default)

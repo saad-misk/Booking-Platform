@@ -9,7 +9,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
 {
     public class RoomsRepository : Repository<Room>, IRoomsRepository
     {
-        public RoomsRepository(AppDbContext context, ILogger<Repository<Room>> logger)
+        public RoomsRepository(AppDbContext context, ILogger<RoomsRepository> logger)
          : base(context, logger) { }
 
         public async Task<List<Room>> GetRoomsByIdsAsync(

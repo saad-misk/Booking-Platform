@@ -13,7 +13,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
 
         public UserRepository(
             AppDbContext context,
-            ILogger<Repository<User>> logger,
+            ILogger<UserRepository> logger,
             IPasswordHasher<User> passwordHasher
         ) : base(context, logger)
         {
