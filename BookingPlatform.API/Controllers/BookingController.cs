@@ -2,6 +2,7 @@ using System.Security.Claims;
 using BookingPlatform.Application.DTOs.Bookings.Requests;
 using BookingPlatform.Application.DTOs.Bookings.Responses;
 using BookingPlatform.Application.Interfaces.Services;
+using BookingPlatform.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,15 +17,19 @@ namespace BookingPlatform.API.Controllers
     public class BookingsController : ControllerBase
     {
         private readonly IBookingService _bookingService;
+        private readonly IInvoiceService _invoiceService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BookingsController"/> class.
         /// </summary>
         /// <param name="bookingService">Service for managing bookings.</param>
+        /// <param name="invoiceService">Service for generating invoices.</param>
         public BookingsController(
-            IBookingService bookingService)
+            IBookingService bookingService,
+            IInvoiceService invoiceService)
         {
             _bookingService = bookingService;
+            _invoiceService = invoiceService;
         }
 
         /// <summary>
@@ -119,6 +124,32 @@ namespace BookingPlatform.API.Controllers
                 return NotFound(new { message = "Booking not found.", traceId = HttpContext.TraceIdentifier });
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Generates and downloads the invoice for a booking.
+        /// </summary>
+        /// <param name="id">The unique identifier of the booking.</param>
+        /// <returns>The invoice as a PDF file.</returns>
+        /// <response code="200">Returns the invoice in PDF format.</response>
+        /// <response code="401">User is not authorized.</response>
+        /// <response code="404">Booking not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("{id:guid}/invoice")]
+        [ProducesResponseType(typeof(FileContentResult), 200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetInvoice(Guid id)
+        {
+            if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+                return BadRequest(new { message = "Invalid user ID.", traceId = HttpContext.TraceIdentifier });
+
+            var pdfBytes = await _invoiceService.GenerateInvoiceAsync(userId, id);
+            if (pdfBytes == null || pdfBytes.Length == 0)
+                return NotFound(new { message = "Invoice not found.", traceId = HttpContext.TraceIdentifier });
+
+            return File(pdfBytes, "application/pdf", $"invoice-{id}.pdf");
         }
     }
 }
