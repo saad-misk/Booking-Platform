@@ -44,6 +44,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
             try
             {
                 await _dbSet.AddAsync(user, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
                 return true; // Success
             }
             catch (Exception ex)

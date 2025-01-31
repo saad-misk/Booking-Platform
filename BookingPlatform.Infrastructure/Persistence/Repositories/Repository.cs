@@ -93,6 +93,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
             try
             {
                 await _dbSet.AddAsync(entity, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -106,6 +107,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
             try
             {
                 _dbSet.Update(entity);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -125,6 +127,7 @@ namespace BookingPlatform.Infrastructure.Persistence.Repositories
             try
             {
                 _dbSet.Remove(entity);
+                await _context.SaveChangesAsync(cancellationToken);
                 return true;
             }
             catch (Exception ex)
