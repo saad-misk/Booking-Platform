@@ -40,3 +40,79 @@ WHERE [u].[Email] = @__email_0
 2025-01-31 16:45:18.904 +02:00 [INF] Executed endpoint 'BookingPlatform.API.Controllers.AuthController.Login (BookingPlatform.API)'
 2025-01-31 16:45:18.934 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5136/api/auth/login - 200 null application/json; charset=utf-8 663.0978ms
 2025-01-31 16:46:14.492 +02:00 [INF] Application is shutting down...
+2025-01-31 18:40:37.988 +02:00 [INF] User profile is available. Using 'C:\Users\user\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-01-31 18:40:38.283 +02:00 [INF] Now listening on: http://localhost:5136
+2025-01-31 18:40:38.348 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-01-31 18:40:38.353 +02:00 [INF] Hosting environment: Development
+2025-01-31 18:40:38.355 +02:00 [INF] Content root path: C:\Users\user\Documents\Final Project\TheProject!\BookingPlatform\BookingPlatform.API
+2025-01-31 18:40:45.922 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5136/swagger/index.html - null null
+2025-01-31 18:40:46.306 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5136/swagger/index.html - 200 null text/html;charset=utf-8 392.7798ms
+2025-01-31 18:40:47.140 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5136/swagger/v1/swagger.json - null null
+2025-01-31 18:40:47.729 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5136/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 600.0796ms
+2025-01-31 18:40:58.527 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5136/api/admin/rooms - null null
+2025-01-31 18:40:58.576 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-01-31 18:40:58.694 +02:00 [INF] Executing endpoint 'BookingPlatform.API.Controllers.AdminController.GetAllRooms (BookingPlatform.API)'
+2025-01-31 18:40:58.750 +02:00 [INF] Route matched with {action = "GetAllRooms", controller = "Admin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllRooms() on controller BookingPlatform.API.Controllers.AdminController (BookingPlatform.API).
+2025-01-31 18:40:58.780 +02:00 [INF] Executed action BookingPlatform.API.Controllers.AdminController.GetAllRooms (BookingPlatform.API) in 14.4526ms
+2025-01-31 18:40:58.790 +02:00 [INF] Executed endpoint 'BookingPlatform.API.Controllers.AdminController.GetAllRooms (BookingPlatform.API)'
+2025-01-31 18:40:58.793 +02:00 [ERR] Request failed: GET /api/admin/rooms
+System.InvalidOperationException: Unable to resolve service for type 'BookingPlatform.Application.Interfaces.Services.Admin.IAdminHotelsService' while attempting to activate 'BookingPlatform.API.Controllers.AdminController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method9(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at BookingPlatform.API.Middlewares.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\Documents\Final Project\TheProject!\BookingPlatform\BookingPlatform.API\Middlewares\RequestLoggingMiddleware.cs:line 45
+2025-01-31 18:40:58.905 +02:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Unable to resolve service for type 'BookingPlatform.Application.Interfaces.Services.Admin.IAdminHotelsService' while attempting to activate 'BookingPlatform.API.Controllers.AdminController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method9(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at BookingPlatform.API.Middlewares.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\Documents\Final Project\TheProject!\BookingPlatform\BookingPlatform.API\Middlewares\RequestLoggingMiddleware.cs:line 45
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2025-01-31 18:40:58.959 +02:00 [ERR] Exception: Unable to resolve service for type 'BookingPlatform.Application.Interfaces.Services.Admin.IAdminHotelsService' while attempting to activate 'BookingPlatform.API.Controllers.AdminController'. (Trace: 00-1bb08ab01f78b516de0caf0c9cdf6142-27c7ad5858155ca5-00)
+System.InvalidOperationException: Unable to resolve service for type 'BookingPlatform.Application.Interfaces.Services.Admin.IAdminHotelsService' while attempting to activate 'BookingPlatform.API.Controllers.AdminController'.
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.ThrowHelperUnableToResolveService(Type type, Type requiredBy)
+   at lambda_method9(Closure, IServiceProvider, Object[])
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass6_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at BookingPlatform.API.Middlewares.RequestLoggingMiddleware.InvokeAsync(HttpContext context) in C:\Users\user\Documents\Final Project\TheProject!\BookingPlatform\BookingPlatform.API\Middlewares\RequestLoggingMiddleware.cs:line 45
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2025-01-31 18:40:59.080 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5136/api/admin/rooms - 500 null application/json; charset=utf-8 553.7863ms
+2025-01-31 18:42:57.674 +02:00 [INF] Application is shutting down...

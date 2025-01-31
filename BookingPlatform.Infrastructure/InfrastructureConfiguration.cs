@@ -13,6 +13,8 @@ using BookingPlatform.Application.Interfaces.HelperServices;
 using BookingPlatform.Infrastructure.Services.Payments;
 using BookingPlatform.Domain.Models;
 using BookingPlatform.Infrastructure.Services.HelperServices;
+using BookingPlatform.Application.Interfaces.Services.Admin;
+using BookingPlatform.Infrastructure.Services.Admin;
 
 namespace BookingPlatform.Infrastructure{
     public static class DependencyInjection
@@ -32,6 +34,10 @@ namespace BookingPlatform.Infrastructure{
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.AddScoped<IAdminHotelsService, AdminHotelsService>();
+            services.AddScoped<IAdminCitiesService, AdminCitiesService>();
+            services.AddScoped<IAdminRoomsService, AdminRoomsService>();
+            services.AddScoped<IAdminSearchService, AdminSearchService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IHotelsService, HotelsService>();
             services.AddScoped<IBookingService, BookingService>();
