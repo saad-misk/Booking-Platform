@@ -5,6 +5,7 @@ namespace BookingPlatform.Domain.Entities
         public Guid CityId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
+        public Image? Thumbnail { get; set; }
         public string PostOffice { get; set; } = string.Empty;
         public string CityCode { get; set; } = string.Empty;
         public int BookingsCount { get; set; }

@@ -22,9 +22,14 @@ namespace BookingPlatform.Infrastructure.Configurations
             
             builder.HasMany(h => h.Gallery)
             .WithOne()
-            .HasForeignKey(i => i.HotelId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(h => h.Thumbnail)
+            .WithMany()
+            .HasForeignKey("ThumbnailId")
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

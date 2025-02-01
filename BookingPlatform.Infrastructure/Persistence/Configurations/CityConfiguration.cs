@@ -18,11 +18,16 @@ namespace BookingPlatform.Infrastructure.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.HasOne(c => c.Thumbnail)
+                .WithMany()
+                .HasForeignKey("ThumbnailId")
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.HasMany(c => c.Images)
-            .WithOne()
-            .HasForeignKey(i => i.CityId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+                .WithOne()
+                .HasForeignKey("CityId")
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
