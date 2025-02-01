@@ -6,6 +6,7 @@ using BookingPlatform.Domain.Interfaces.JWT;
 using BookingPlatform.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
+using BookingPlatform.Domain.Enums;
 
 namespace BookingPlatform.Infrastructure.Services
 {
@@ -129,6 +130,7 @@ namespace BookingPlatform.Infrastructure.Services
             {
                 FirstName = firstName,
                 LastName = lastName,
+                Role = UserRole.NormalUser,
                 Email = email,
                 UserName = email,
                 PasswordHash = _passwordHasher.HashPassword(new User(), password)

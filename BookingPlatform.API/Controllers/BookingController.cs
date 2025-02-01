@@ -2,7 +2,6 @@ using System.Security.Claims;
 using BookingPlatform.Application.DTOs.Bookings.Requests;
 using BookingPlatform.Application.DTOs.Bookings.Responses;
 using BookingPlatform.Application.Interfaces.Services;
-using BookingPlatform.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +10,7 @@ namespace BookingPlatform.API.Controllers
     /// <summary>
     /// Handles booking-related operations for authenticated users.
     /// </summary>
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "NormalUser")]
     [Route("api/user/bookings")]
     [ApiController]
     public class BookingsController : ControllerBase
