@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using BookingPlatform.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingPlatform.Infrastructure.Persistence.DBContext
 {

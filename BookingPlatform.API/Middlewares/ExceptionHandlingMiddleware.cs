@@ -17,9 +17,11 @@ namespace BookingPlatform.API.Middlewares
         {
             { 400, "Bad Request" },
             { 401, "Unauthorized" },
+            { 402, "Payment Required" },
             { 403, "Forbidden" },
             { 404, "Not Found" },
             { 409, "Conflict" },
+            { 422, "Validation Error" },
             { 500, "Internal Server Error" },
             { 503, "Service Unavailable" }
         };
@@ -47,20 +49,38 @@ namespace BookingPlatform.API.Middlewares
         private void LogException(Exception exception, HttpContext context)
         {
             var logLevel = exception is CustomException ? LogLevel.Warning : LogLevel.Error;
-            logger.Log(logLevel, exception, "Exception: {Message} (Trace: {TraceId})", 
-                exception.Message, GetTraceId(context));
+            
+            logger.Log(logLevel, exception, 
+                "Exception: {Message} | " +
+                "Type: {ExceptionType} | " +
+                "StatusCode: {StatusCode} | " +
+                "Trace: {TraceId} | " +
+                "Path: {Path}",
+                exception.Message,
+                exception.GetType().Name,
+                context.Response.StatusCode,
+                GetTraceId(context),
+                context.Request.Path);
         }
 
         private ProblemDetails CreateProblemDetails(HttpContext context, Exception exception)
         {
             var (statusCode, title, detail) = MapExceptionToProblemDetails(exception);
-            return new ProblemDetails
+            var problemDetails = new ProblemDetails
             {
                 Status = statusCode,
                 Title = title,
                 Detail = detail,
-                Extensions = { ["traceId"] = GetTraceId(context) }
+                Extensions =
+                {
+                    ["traceId"] = GetTraceId(context),
+                    ["timestamp"] = DateTime.UtcNow.ToString("O"),
+                    ["errorCode"] = GetErrorCode(exception),
+                    ["stackTrace"] = environment.IsDevelopment() ? exception.StackTrace : null
+                }
             };
+
+            return problemDetails;
         }
 
         private (int statusCode, string title, string detail) MapExceptionToProblemDetails(
@@ -70,31 +90,45 @@ namespace BookingPlatform.API.Middlewares
             {
                 return (
                     StatusCodes.Status500InternalServerError,
-                    StatusCodeTitles[500],
-                    environment.IsDevelopment() ? exception.Message : FallbackErrorMessage
+                    "Internal Server Error",
+                    environment.IsDevelopment() 
+                        ? exception.Message 
+                        : "An unexpected error occurred. Please try again later."
                 );
             }
 
-            var statusCode = customException switch
+            var (statusCode, title) = customException switch
             {
-                UserNotFoundException => StatusCodes.Status404NotFound,
-                InvalidPasswordException => StatusCodes.Status400BadRequest,
-                DuplicateEmailException => StatusCodes.Status409Conflict,
-                UserRegistrationException => StatusCodes.Status400BadRequest,
-                ConflictException => StatusCodes.Status409Conflict,
-                BadRequestException => StatusCodes.Status400BadRequest,
-                PaymentException => StatusCodes.Status402PaymentRequired,
-                UnauthorizedException => StatusCodes.Status401Unauthorized,
-                NotFoundException => StatusCodes.Status404NotFound,
-                CustomException => StatusCodes.Status500InternalServerError,
-                _ => StatusCodes.Status500InternalServerError
+                UserNotFoundException => (404, "User Not Found"),
+                InvalidPasswordException => (400, "Invalid Credentials"),
+                DuplicateEmailException => (409, "Email Already Exists"),
+                NotFoundException => (404, "Resource Not Found"),
+                ConflictException => (409, "Resource Conflict"),
+                BadRequestException => (400, "Invalid Request"),
+                UnauthorizedException => (401, "Unauthorized Access"),
+                PaymentException => (402, "Payment Required"),
+                _ => (500, "Internal Server Error")
             };
 
+            // Always show custom exception messages
             return (
                 statusCode,
-                StatusCodeTitles.TryGetValue(statusCode, out var title) ? title : "Error",
-                environment.IsDevelopment() ? customException.Message : FallbackErrorMessage
+                title,
+                customException.Message
             );
+        }
+
+        private static string GetErrorCode(Exception exception)
+        {
+            return exception switch
+            {
+                UserNotFoundException => "USER_NOT_FOUND",
+                InvalidPasswordException => "INVALID_PASSWORD",
+                DuplicateEmailException => "DUPLICATE_EMAIL",
+                NotFoundException => "RESOURCE_NOT_FOUND",
+                ConflictException => "RESOURCE_CONFLICT",
+                _ => "UNKNOWN_ERROR"
+            };
         }
 
         private static string GetTraceId(HttpContext context) => 

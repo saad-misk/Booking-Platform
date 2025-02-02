@@ -9,6 +9,5 @@ namespace BookingPlatform.Application.DTOs.Hotels.Requests
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public string PhoneNumber { get; set; }
-        public string? ThumbnailUrl { get; set; }
     }
 }

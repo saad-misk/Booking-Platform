@@ -13,7 +13,7 @@ namespace BookingPlatform.Infrastructure.Services.Admin
         ICitiesRepository _citiesRepository;
         IUnitOfWork _unitOfWork;
 
-        public AdminCitiesService(ICitiesRepository citiesRepository, IUnitOfWork unitOfWork)
+        public AdminCitiesService(IUnitOfWork unitOfWork, ICitiesRepository citiesRepository)
         {
             _citiesRepository = citiesRepository;
             _unitOfWork = unitOfWork;
@@ -25,6 +25,15 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                 ?? throw new NotFoundException("City not found");
                 
             return city;
+        }
+
+        public async Task<List<CityResponse>> GetAllCitiesAsync()
+        {
+            var cities = (List<City>)await _citiesRepository.GetAsync();
+            ICollection<CityResponse> responseList = new List<CityResponse>();
+            foreach(City city in cities)
+                responseList.Add(MapToCityResponse(city));
+            return (List<CityResponse>)responseList;
         }
 
         public async Task<CityResponse> CreateCityAsync(CreateCityRequest request)
@@ -55,7 +64,7 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                 CityCode = city.CityCode,
                 HotelsCount = city.Hotels.Count,
                 BookingsCount = city.BookingsCount,
-                Thumbnail = city.Images.FirstOrDefault(i => i.IsThumbnail)
+                Thumbnail = city.Thumbnail
             };
         }
 

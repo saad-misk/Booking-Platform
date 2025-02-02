@@ -9,7 +9,7 @@ namespace BookingPlatform.Application.Interfaces.Services.Admin
         Task UpdateCityAsync(UpdateCityRequest request);
         Task<CityResponse> CreateCityAsync(CreateCityRequest request);
         Task DeleteCityAsync(Guid cityId);
+        Task<List<CityResponse>> GetAllCitiesAsync();
         Task<City> GetCityByIdAsync(Guid cityId);
-        
     }
 }

@@ -26,6 +26,9 @@ namespace BookingPlatform.Infrastructure.Configurations
                 .WithMany(r => r.Bookings)
                 .HasForeignKey(b => b.RoomId)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.Property(b => b.TotalPrice)
+                .HasPrecision(18, 4);
 
             builder.HasIndex(b => b.ConfirmationNumber).IsUnique();
         }

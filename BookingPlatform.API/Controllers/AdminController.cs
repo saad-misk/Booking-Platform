@@ -7,6 +7,9 @@ using BookingPlatform.Application.DTOs.Cities.Requests;
 using BookingPlatform.Application.DTOs.Cities.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using BookingPlatform.Application.Interfaces.Services;
+using BookingPlatform.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookingPlatform.API.Controllers
 {
@@ -17,12 +20,14 @@ namespace BookingPlatform.API.Controllers
     [Route("api/admin")]
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly IAdminHotelsService _adminHotelsService;
         private readonly IAdminCitiesService _adminCitiesService;
         private readonly IAdminSearchService _adminSearchService;
         private readonly IAdminRoomsService _adminRoomsService;
+        private readonly IImageService _imageService;
 
         /// <summary>
         /// Initializes a new instance of the AdminController
@@ -31,16 +36,19 @@ namespace BookingPlatform.API.Controllers
         /// <param name="adminCitiesService">Service for city management operations</param>
         /// <param name="adminSearchService">Service for administrative search operations</param>
         /// <param name="adminRoomsService">Service for room management operations</param>
+        /// <param name="imageService">Service for image management operations</param>
         public AdminController(
             IAdminHotelsService adminHotelsService,
             IAdminCitiesService adminCitiesService,
             IAdminSearchService adminSearchService,
-            IAdminRoomsService adminRoomsService)
+            IAdminRoomsService adminRoomsService,
+            IImageService imageService) // Inject the ImageService
         {
             _adminHotelsService = adminHotelsService;
             _adminCitiesService = adminCitiesService;
             _adminSearchService = adminSearchService;
             _adminRoomsService = adminRoomsService;
+            _imageService = imageService;
         }
 
         #region Rooms Endpoints
@@ -136,6 +144,19 @@ namespace BookingPlatform.API.Controllers
         #region Hotels Endpoints
 
         /// <summary>
+        /// Retrieves all hotels
+        /// </summary>
+        /// <returns>List of hotels details</returns>
+        /// <response code="200">Successfully retrieved all hotels</response>
+        [HttpGet("hotels")]
+        [ProducesResponseType(typeof(IEnumerable<HotelDetailsResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllHotels()
+        {
+            var hotels = await _adminHotelsService.GetAllHotelsAsync();
+            return Ok(hotels);
+        }
+
+        /// <summary>
         /// Creates a new hotel
         /// </summary>
         /// <param name="request">Hotel creation details</param>
@@ -211,6 +232,19 @@ namespace BookingPlatform.API.Controllers
         #endregion
 
         #region Cities Endpoints
+
+        /// <summary>
+        /// Retrieves all cities
+        /// </summary>
+        /// <returns>List of cities details</returns>
+        /// <response code="200">Successfully retrieved all cities</response>
+        [HttpGet("cities")]
+        [ProducesResponseType(typeof(IEnumerable<CityResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllCities()
+        {
+            var cities = await _adminCitiesService.GetAllCitiesAsync();
+            return Ok(cities);
+        }
 
         /// <summary>
         /// Creates a new city
@@ -321,6 +355,97 @@ namespace BookingPlatform.API.Controllers
         {
             var results = await _adminSearchService.SearchCitiesAsync(request);
             return Ok(results);
+        }
+
+        #endregion
+        #region Image Endpoints
+
+        /// <summary>
+        /// Sets the thumbnail image for an entity (Hotel, City, Room)
+        /// </summary>
+        /// <param name="entityId">The identifier of the entity (Hotel, City, Room)</param>
+        /// <param name="entityType">Type of the entity (Hotel, City, Room)</param>
+        /// <param name="image">The thumbnail image to be set</param>
+        /// <returns>Result of the thumbnail set operation</returns>
+        /// <response code="200">Successfully set the thumbnail</response>
+        /// <response code="400">Invalid entity type or image upload error</response>
+        [HttpPost("set-thumbnail/{entityType}/{entityId:guid}")]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SetThumbnail(Guid entityId, string entityType, IFormFile image)
+        {
+            if (!Enum.TryParse(entityType, true, out ImageEntityType imageEntityType))
+            {
+                return BadRequest("Invalid entity type.");
+            }
+
+            var imageUrl = await _imageService.SetThumbnailAsync(entityId, imageEntityType, image);
+            if (string.IsNullOrEmpty(imageUrl))
+            {
+                return BadRequest("Failed to upload the image.");
+            }
+
+            return Ok(new { ImageUrl = imageUrl });
+        }
+
+        /// <summary>
+        /// Adds an image to the entity (Hotel, City, Room)
+        /// </summary>
+        /// <param name="entityId">The identifier of the entity (Hotel, City, Room)</param>
+        /// <param name="entityType">Type of the entity (Hotel, City, Room)</param>
+        /// <param name="image">The image to be added</param>
+        /// <returns>Result of the image add operation</returns>
+        /// <response code="200">Successfully added the image</response>
+        /// <response code="400">Invalid entity type or image upload error</response>
+        [HttpPost("add-image/{entityType}/{entityId:guid}")]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddImage(Guid entityId, string entityType, IFormFile image)
+        {
+            if (!Enum.TryParse(entityType, true, out ImageEntityType imageEntityType))
+            {
+                return BadRequest("Invalid entity type.");
+            }
+
+            var imageUrl = await _imageService.AddImageAsync(entityId, imageEntityType, image);
+            if (string.IsNullOrEmpty(imageUrl))
+            {
+                return BadRequest("Failed to upload the image.");
+            }
+
+            return Ok(new { ImageUrl = imageUrl });
+        }
+
+        /// <summary>
+        /// Deletes an image from an entity (Hotel, City, Room)
+        /// </summary>
+        /// <param name="entityId">The identifier of the entity (Hotel, City, Room)</param>
+        /// <param name="entityType">Type of the entity (Hotel, City, Room)</param>
+        /// <param name="imageUrl">The URL of the image to be deleted</param>
+        /// <returns>Result of the image deletion operation</returns>
+        /// <response code="204">Successfully deleted the image</response>
+        /// <response code="400">Invalid entity type</response>
+        /// <response code="404">Image or entity not found</response>
+        [HttpDelete("delete-image/{entityType}/{entityId:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteImage(Guid entityId, string entityType, [FromQuery] string imageUrl)
+        {
+            if (!Enum.TryParse(entityType, true, out ImageEntityType imageEntityType))
+            {
+                return BadRequest("Invalid entity type.");
+            }
+
+            var deletionSuccessful = await _imageService.DeleteImageAsync(entityId, imageEntityType, imageUrl);
+            if (!deletionSuccessful)
+            {
+                return NotFound("Entity or image not found.");
+            }
+
+            return NoContent();
         }
 
         #endregion

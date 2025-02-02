@@ -9,6 +9,7 @@ namespace BookingPlatform.Application.Interfaces.Services.Admin
         Task UpdateHotelAsync(UpdateHotelRequest request);
         Task<Hotel> GetHotelByIdAsync(Guid hotelId);
         Task<HotelDetailsResponse> CreateHotelAsync(CreateHotelRequest request);
+        Task<List<HotelDetailsResponse>> GetAllHotelsAsync();
         Task DeleteHotelAsync(Guid hotelId);
     }
 }

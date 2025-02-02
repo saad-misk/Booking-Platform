@@ -5,7 +5,6 @@ using BookingPlatform.Domain.Interfaces.Repositories;
 using BookingPlatform.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookingPlatform.Infrastructure.Persistence.DBContext
 {
@@ -16,7 +15,7 @@ namespace BookingPlatform.Infrastructure.Persistence.DBContext
         private readonly ConcurrentDictionary<Type, object> _repositories = new();
         private readonly ILogger<UnitOfWork> _logger;
         private readonly ILoggerFactory _loggerFactory;
-
+        
         public UnitOfWork(AppDbContext context, ILogger<UnitOfWork> logger, ILoggerFactory loggerFactory)
         {
             _context = context;
@@ -26,9 +25,9 @@ namespace BookingPlatform.Infrastructure.Persistence.DBContext
 
         public IRepository<T> GetRepository<T>() where T : class
         {
-            return (IRepository<T>)_repositories.GetOrAdd(typeof(T), _ =>
+            return (IRepository<T>)_repositories.GetOrAdd(typeof(T), _ => 
                 new Repository<T>(
-                    _context,
+                    _context, 
                     _loggerFactory.CreateLogger<Repository<T>>()
                 )
             );
@@ -39,59 +38,47 @@ namespace BookingPlatform.Infrastructure.Persistence.DBContext
             if (_transaction != null)
                 throw new InvalidOperationException("A transaction is already active.");
 
-            var strategy = _context.Database.CreateExecutionStrategy();
-            await strategy.ExecuteAsync(async () =>
-            {
-                _transaction = await _context.Database.BeginTransactionAsync();
-                _logger.LogInformation("Transaction started.");
-            });
+            _transaction = await _context.Database.BeginTransactionAsync();
+            _logger.LogInformation("Transaction started.");
         }
 
         public async Task CommitAsync()
         {
-            var strategy = _context.Database.CreateExecutionStrategy();
-            await strategy.ExecuteAsync(async () =>
+            try
             {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    if (_transaction != null)
-                        await _transaction.CommitAsync();
-                    _logger.LogInformation("Transaction committed successfully.");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Commit failed.");
-                    throw new TransactionException("Commit failed", ex);
-                }
-                finally
-                {
-                    await DisposeTransactionAsync();
-                }
-            });
+                await _context.SaveChangesAsync();
+                if (_transaction != null)
+                    await _transaction.CommitAsync();
+                _logger.LogInformation("Transaction committed successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Commit failed.");
+                throw new TransactionException("Commit failed", ex);
+            }
+            finally
+            {
+                await DisposeTransactionAsync();
+            }
         }
 
         public async Task RollbackAsync()
         {
-            var strategy = _context.Database.CreateExecutionStrategy();
-            await strategy.ExecuteAsync(async () =>
+            try
             {
-                try
-                {
-                    if (_transaction != null)
-                        await _transaction.RollbackAsync();
-                    _logger.LogInformation("Transaction rolled back.");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Rollback failed.");
-                    throw new TransactionException("Rollback failed", ex);
-                }
-                finally
-                {
-                    await DisposeTransactionAsync();
-                }
-            });
+                if (_transaction != null)
+                    await _transaction.RollbackAsync();
+                _logger.LogInformation("Transaction rolled back.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Rollback failed.");
+                throw new TransactionException("Rollback failed", ex);
+            }
+            finally
+            {
+                await DisposeTransactionAsync();
+            }
         }
 
         public async Task<int> SaveAsync()

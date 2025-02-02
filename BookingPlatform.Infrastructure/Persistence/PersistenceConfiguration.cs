@@ -32,7 +32,7 @@ namespace BookingPlatform.Infrastructure.Persistence{
         services.AddDbContext<AppDbContext>(options =>
         { 
             options.UseSqlServer(connectionString,
-                optionsBuilder => optionsBuilder.EnableRetryOnFailure(2));
+                optionsBuilder => optionsBuilder.EnableRetryOnFailure(0));
         });    
         return services;
     }

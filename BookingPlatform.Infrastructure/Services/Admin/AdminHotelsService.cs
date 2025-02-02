@@ -11,54 +11,69 @@ namespace BookingPlatform.Infrastructure.Services.Admin
     public class AdminHotelsService : IAdminHotelsService
     {
         IHotelsRepository _hotelsRepository;
-        IUnitOfWork _unitOfWork;
-        public AdminHotelsService(IHotelsRepository hotelsRepository, IUnitOfWork unitOfWork)
+        ICitiesRepository _citiesRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public AdminHotelsService(IUnitOfWork unitOfWork, IHotelsRepository hotelsRepository, ICitiesRepository citiesRepository)
         {
+            _citiesRepository = citiesRepository;
             _hotelsRepository = hotelsRepository;
             _unitOfWork = unitOfWork;
-        } 
+        }
 
         public async Task<Hotel> GetHotelByIdAsync(Guid hotelId)
         {
-            var city = await _hotelsRepository.GetByIdAsync(hotelId)
+            var hotel = await _hotelsRepository.GetByIdAsync(hotelId)
                 ?? throw new NotFoundException("Hotel not found");
-                
-            return city;
+
+            return hotel;
+        }
+
+        public async Task<List<HotelDetailsResponse>> GetAllHotelsAsync()
+        {
+            var hotels = await _hotelsRepository.GetAsync();
+            var responseList = hotels.Select(MapToHotelResponse).ToList();
+            return responseList;
         }
 
         public async Task<HotelDetailsResponse> CreateHotelAsync(CreateHotelRequest request)
         {
-            var hotel = new Hotel{
+            var city = await _citiesRepository.GetByIdAsync(request.CityId)
+                ?? throw new NotFoundException("City not found!");
+
+            var hotel = new Hotel
+            {
                 HotelId = Guid.NewGuid(),
                 CityId = request.CityId,
                 Name = request.Name,
                 Description = request.Description,
                 ReviewsRating = 0,
                 StarRating = request.StarRating,
+                City = city
             };
-            
+
             await _hotelsRepository.AddAsync(hotel);
             await _unitOfWork.CommitAsync();
-            
+
             return MapToHotelResponse(hotel);
         }
 
         public async Task UpdateHotelAsync(UpdateHotelRequest request)
         {
-            var hotel = await _hotelsRepository.GetByIdAsync(request.HotelId) 
+            var hotel = await _hotelsRepository.GetByIdAsync(request.HotelId)
                 ?? throw new NotFoundException("Hotel not found");
 
             UpdateHotelProperties(hotel, request);
-            
-            _hotelsRepository.Update(hotel);
+
+           _hotelsRepository.Update(hotel);
             await _unitOfWork.CommitAsync();
         }
 
         public async Task DeleteHotelAsync(Guid hotelId)
         {
-            var hotel = await _hotelsRepository.GetByIdAsync(hotelId);
-            if (hotel == null) throw new NotFoundException("Hotel not found");
-            
+            var hotel = await _hotelsRepository.GetByIdAsync(hotelId)
+                ?? throw new NotFoundException("Hotel not found");
+
             await _hotelsRepository.DeleteAsync(hotelId);
             await _unitOfWork.CommitAsync();
         }
@@ -69,17 +84,17 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             {
                 hotel.Name = request.Name.Trim();
             }
-            
+
             if (request.Description != null)
             {
                 hotel.Description = request.Description;
             }
-            
+
             if (request.StarRating != 0)
             {
                 hotel.StarRating = ValidateStarRating(request.StarRating);
             }
-            
+
             if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
             {
                 hotel.PhoneNumber = ValidatePhoneNumber(request.PhoneNumber);
@@ -98,12 +113,12 @@ namespace BookingPlatform.Infrastructure.Services.Admin
         private static string ValidatePhoneNumber(string phoneNumber)
         {
             var cleanedNumber = new string(phoneNumber.Where(char.IsDigit).ToArray());
-            
+
             if (cleanedNumber.Length < 7 || cleanedNumber.Length > 15)
             {
                 throw new BadRequestException("Invalid phone number format");
             }
-            
+
             return cleanedNumber;
         }
 
@@ -115,7 +130,7 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                 Name = hotel.Name,
                 StarRating = hotel.StarRating,
                 Description = hotel.Description ?? string.Empty,
-                City = hotel.City.Name,
+                City = hotel.City?.Name ?? "UnKnown",
                 ReviewsRating = hotel.ReviewsRating,
             };
         }
