@@ -6,8 +6,9 @@ namespace BookingPlatform.Application.DTOs.Checkout.Requests
     public class CheckoutRequest
     {
         public Guid UserId { get; set; }
+        [Required]
         public string FirstName { get; set; }
-        
+        [Required]
         public string LastName { get; set; }
         
         [EmailAddress]
@@ -19,7 +20,6 @@ namespace BookingPlatform.Application.DTOs.Checkout.Requests
         [Required]
         public PaymentMethod PaymentMethod { get; set; }
         
-        public string SpecialRequests { get; set; }
     }
 
 }

@@ -17,22 +17,22 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
-        public async Task<List<RoomResponse>> GetAllRoomsAsync()
+        public async Task<List<RoomResponse>> GetAllRoomsAsync(CancellationToken cancellationToken = default)
         {
-            var rooms = await _unitOfWork.GetRepository<Room>().GetAsync();
+            var rooms = await _unitOfWork.GetRepository<Room>().GetAsync(cancellationToken: cancellationToken);
             var responseList = rooms.Select(MapToRoomResponse).ToList();
             return responseList;
         }
 
-        public async Task<Room> GetRoomByIdAsync(Guid roomId)
+        public async Task<Room> GetRoomByIdAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
-            var room = await _unitOfWork.GetRepository<Room>().GetByIdAsync(roomId)
+            var room = await _unitOfWork.GetRepository<Room>().GetByIdAsync(roomId, cancellationToken)
                 ?? throw new NotFoundException("Room not found");
 
             return room;
         }
 
-        public async Task<RoomResponse> CreateRoomAsync(CreateRoomRequest request)
+        public async Task<RoomResponse> CreateRoomAsync(CreateRoomRequest request, CancellationToken cancellationToken = default)
         {
             var hotel = await _unitOfWork.GetRepository<Hotel>().GetByIdAsync(request.HotelId)
                 ?? throw new NotFoundException("Hotel not found!");
@@ -48,15 +48,15 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                 Number = request.Number
             };
 
-            await _unitOfWork.GetRepository<Room>().AddAsync(newRoom);
+            await _unitOfWork.GetRepository<Room>().AddAsync(newRoom, cancellationToken);
             await _unitOfWork.CommitAsync();
 
             return MapToRoomResponse(newRoom);
         }
 
-        public async Task UpdateRoomAsync(UpdateRoomRequest request)
+        public async Task UpdateRoomAsync(UpdateRoomRequest request, CancellationToken cancellationToken = default)
         {
-            var room = await _unitOfWork.GetRepository<Room>().GetByIdAsync(request.RoomId)
+            var room = await _unitOfWork.GetRepository<Room>().GetByIdAsync(request.RoomId, cancellationToken)
                 ?? throw new NotFoundException("Room not found");
 
             UpdateRoomProperties(room, request);
@@ -65,12 +65,12 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task DeleteRoomAsync(Guid roomId)
+        public async Task DeleteRoomAsync(Guid roomId, CancellationToken cancellationToken = default)
         {
-            var room = await _unitOfWork.GetRepository<Room>().GetByIdAsync(roomId)
+            var room = await _unitOfWork.GetRepository<Room>().GetByIdAsync(roomId, cancellationToken)
                 ?? throw new NotFoundException("Room not found");
 
-            await _unitOfWork.GetRepository<Room>().DeleteAsync(room.RoomId);
+            await _unitOfWork.GetRepository<Room>().DeleteAsync(room.RoomId, cancellationToken);
             await _unitOfWork.CommitAsync();
         }
 

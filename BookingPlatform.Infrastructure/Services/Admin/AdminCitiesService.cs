@@ -19,7 +19,7 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<City> GetCityByIdAsync(Guid cityId)
+        public async Task<City> GetCityByIdAsync(Guid cityId, CancellationToken cancellationToken = default)
         {
             var city = await _citiesRepository.GetByIdAsync(cityId)
                 ?? throw new NotFoundException("City not found");
@@ -27,7 +27,7 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             return city;
         }
 
-        public async Task<List<CityResponse>> GetAllCitiesAsync()
+        public async Task<List<CityResponse>> GetAllCitiesAsync(CancellationToken cancellationToken = default)
         {
             var cities = (List<City>)await _citiesRepository.GetAsync();
             ICollection<CityResponse> responseList = new List<CityResponse>();
@@ -36,7 +36,7 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             return (List<CityResponse>)responseList;
         }
 
-        public async Task<CityResponse> CreateCityAsync(CreateCityRequest request)
+        public async Task<CityResponse> CreateCityAsync(CreateCityRequest request, CancellationToken cancellationToken = default)
         {
             var city = new City
             {
@@ -68,7 +68,7 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             };
         }
 
-        public async Task UpdateCityAsync(UpdateCityRequest request)
+        public async Task UpdateCityAsync(UpdateCityRequest request, CancellationToken cancellationToken = default)
         {
             var city = await _citiesRepository.GetByIdAsync(request.CityId) 
                 ?? throw new NotFoundException("City not found");
@@ -128,9 +128,9 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             }
             return postalCode;
         }
-        public async Task DeleteCityAsync(Guid cityId)
+        public async Task DeleteCityAsync(Guid cityId, CancellationToken cancellationToken = default)
         {
-            var city = await _citiesRepository.GetByIdAsync(cityId);
+            var city = await _citiesRepository.GetByIdAsync(cityId, cancellationToken);
             if (city == null) throw new NotFoundException("City not found");    
             
             await _citiesRepository.DeleteAsync(cityId);

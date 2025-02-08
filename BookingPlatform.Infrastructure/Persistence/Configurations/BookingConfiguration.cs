@@ -28,7 +28,7 @@ namespace BookingPlatform.Infrastructure.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
             
             builder.Property(b => b.TotalPrice)
-                .HasPrecision(18, 4);
+                .HasPrecision(18, 12);
 
             builder.HasIndex(b => b.ConfirmationNumber).IsUnique();
         }

@@ -28,7 +28,8 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             _roomsRepo = roomsRepo;
         }
 
-        public async Task<SearchResult<HotelSearchResult>> SearchHotelsAsync(HotelSearchCriteria criteria)
+        public async Task<SearchResult<HotelSearchResult>> SearchHotelsAsync(HotelSearchCriteria criteria,
+                    CancellationToken cancellationToken = default)
         {
             Expression<Func<Hotel, bool>> filter = h =>
                 (string.IsNullOrEmpty(criteria.Name) || h.Name.Contains(criteria.Name)) &&
@@ -48,12 +49,14 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                     CityName = h.City.Name,
                     Rating = h.ReviewsRating
                 },
-                includes: [h => h.City ] );
+                includes: [h => h.City ],
+                cancellationToken);
 
             return result;
         }
 
-        public async Task<SearchResult<CitySearchResult>> SearchCitiesAsync(CitySearchCriteria criteria)
+        public async Task<SearchResult<CitySearchResult>> SearchCitiesAsync(CitySearchCriteria criteria,
+                    CancellationToken cancellationToken = default)
         {
             Expression<Func<City, bool>> filter = c =>
                 string.IsNullOrEmpty(criteria.Name) || c.Name.Contains(criteria.Name);
@@ -69,12 +72,14 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                     Name = c.Name,
                     HotelCount = c.Hotels.Count
                 },
-                includes: [c => c.Hotels]);
+                includes: [c => c.Hotels],
+                cancellationToken);
 
             return result;
         }
 
-        public async Task<SearchResult<RoomSearchResult>> SearchRoomsAsync(RoomSearchCriteria criteria)
+        public async Task<SearchResult<RoomSearchResult>> SearchRoomsAsync(RoomSearchCriteria criteria,
+                    CancellationToken cancellationToken = default)
         {
             Expression<Func<Room, bool>> filter = r =>
                 (!criteria.HotelId.HasValue || r.HotelId == criteria.HotelId) &&
@@ -94,7 +99,8 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                     HotelName = r.Hotel.Name,
                     Price = r.PricePerNight
                 },
-                includes: [r => r.Hotel]); 
+                includes: [r => r.Hotel],
+                cancellationToken); 
 
             return result;
         }
@@ -105,15 +111,17 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             int pageNumber,
             int pageSize,
             Func<TEntity, TResponse> selector,
-            IEnumerable<Expression<Func<TEntity, object>>>? includes = null)
+            IEnumerable<Expression<Func<TEntity, object>>>? includes = null,
+            CancellationToken cancellationToken = default)
             where TEntity : class
         {
-            var totalCount = await repo.CountAsync(filter);
+            var totalCount = await repo.CountAsync(filter, cancellationToken);
             var items = await repo.GetAsync(
                 filter: filter,
                 includes: includes,
                 skip: (pageNumber - 1) * pageSize,
-                take: pageSize);
+                take: pageSize,
+                cancellationToken: cancellationToken);
 
             return new SearchResult<TResponse>
             {

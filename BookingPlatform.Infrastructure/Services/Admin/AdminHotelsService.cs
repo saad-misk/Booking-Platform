@@ -21,24 +21,24 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Hotel> GetHotelByIdAsync(Guid hotelId)
+        public async Task<Hotel> GetHotelByIdAsync(Guid hotelId, CancellationToken cancellationToken = default)
         {
-            var hotel = await _hotelsRepository.GetByIdAsync(hotelId)
+            var hotel = await _hotelsRepository.GetByIdAsync(hotelId, cancellationToken)
                 ?? throw new NotFoundException("Hotel not found");
 
             return hotel;
         }
 
-        public async Task<List<HotelDetailsResponse>> GetAllHotelsAsync()
+        public async Task<List<HotelDetailsResponse>> GetAllHotelsAsync(CancellationToken cancellationToken = default)
         {
-            var hotels = await _hotelsRepository.GetAsync();
+            var hotels = await _hotelsRepository.GetAsync(cancellationToken: cancellationToken);
             var responseList = hotels.Select(MapToHotelResponse).ToList();
             return responseList;
         }
 
-        public async Task<HotelDetailsResponse> CreateHotelAsync(CreateHotelRequest request)
+        public async Task<HotelDetailsResponse> CreateHotelAsync(CreateHotelRequest request, CancellationToken cancellationToken = default)
         {
-            var city = await _citiesRepository.GetByIdAsync(request.CityId)
+            var city = await _citiesRepository.GetByIdAsync(request.CityId, cancellationToken)
                 ?? throw new NotFoundException("City not found!");
 
             var hotel = new Hotel
@@ -52,15 +52,15 @@ namespace BookingPlatform.Infrastructure.Services.Admin
                 City = city
             };
 
-            await _hotelsRepository.AddAsync(hotel);
+            await _hotelsRepository.AddAsync(hotel, cancellationToken);
             await _unitOfWork.CommitAsync();
 
             return MapToHotelResponse(hotel);
         }
 
-        public async Task UpdateHotelAsync(UpdateHotelRequest request)
+        public async Task UpdateHotelAsync(UpdateHotelRequest request, CancellationToken cancellationToken = default)
         {
-            var hotel = await _hotelsRepository.GetByIdAsync(request.HotelId)
+            var hotel = await _hotelsRepository.GetByIdAsync(request.HotelId, cancellationToken)
                 ?? throw new NotFoundException("Hotel not found");
 
             UpdateHotelProperties(hotel, request);
@@ -69,12 +69,12 @@ namespace BookingPlatform.Infrastructure.Services.Admin
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task DeleteHotelAsync(Guid hotelId)
+        public async Task DeleteHotelAsync(Guid hotelId, CancellationToken cancellationToken = default)
         {
-            var hotel = await _hotelsRepository.GetByIdAsync(hotelId)
+            var hotel = await _hotelsRepository.GetByIdAsync(hotelId, cancellationToken)
                 ?? throw new NotFoundException("Hotel not found");
 
-            await _hotelsRepository.DeleteAsync(hotelId);
+            await _hotelsRepository.DeleteAsync(hotelId, cancellationToken);
             await _unitOfWork.CommitAsync();
         }
 

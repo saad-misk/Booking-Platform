@@ -6,10 +6,10 @@ namespace BookingPlatform.Application.Interfaces.Services.Admin
 {
     public interface IAdminCitiesService : IAdminService
     {
-        Task UpdateCityAsync(UpdateCityRequest request);
-        Task<CityResponse> CreateCityAsync(CreateCityRequest request);
-        Task DeleteCityAsync(Guid cityId);
-        Task<List<CityResponse>> GetAllCitiesAsync();
-        Task<City> GetCityByIdAsync(Guid cityId);
+        Task UpdateCityAsync(UpdateCityRequest request, CancellationToken cancellationToken = default);
+        Task<CityResponse> CreateCityAsync(CreateCityRequest request, CancellationToken cancellationToken = default);
+        Task DeleteCityAsync(Guid cityId, CancellationToken cancellationToken = default);
+        Task<List<CityResponse>> GetAllCitiesAsync(CancellationToken cancellationToken = default);
+        Task<City> GetCityByIdAsync(Guid cityId, CancellationToken cancellationToken = default);
     }
 }
