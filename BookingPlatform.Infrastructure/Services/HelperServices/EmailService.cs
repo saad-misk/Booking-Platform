@@ -10,12 +10,12 @@ namespace BookingPlatform.Infrastructure.Services.HelperServices
     public class EmailService : IEmailService
     {
         private readonly EmailSettings _emailSettings;
-        private readonly SendGridClient _sendGridClient;
+        private readonly ISendGridClient _sendGridClient;
 
-        public EmailService(IOptions<EmailSettings> emailSettings)
+        public EmailService(IOptions<EmailSettings> emailSettings, ISendGridClient sendGridClient)
         {
             _emailSettings = emailSettings.Value ?? throw new ArgumentNullException(nameof(emailSettings));
-            _sendGridClient = new SendGridClient(_emailSettings.ApiKey);
+            _sendGridClient = sendGridClient ?? throw new ArgumentNullException(nameof(sendGridClient));
         }
 
         public async Task SendBookingConfirmationAsync(string email, Booking booking, string filePath)

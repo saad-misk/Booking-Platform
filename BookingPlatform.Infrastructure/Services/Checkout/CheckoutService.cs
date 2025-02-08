@@ -1,6 +1,7 @@
 using BookingPlatform.Application.DTOs.Checkout.Requests;
 using BookingPlatform.Application.DTOs.Checkout.Responses;
 using BookingPlatform.Application.Interfaces.HelperServices;
+using BookingPlatform.Application.Interfaces.HelperServices.Payment;
 using BookingPlatform.Application.Interfaces.Services;
 using BookingPlatform.Domain.Entities;
 using BookingPlatform.Domain.Enums;

@@ -18,6 +18,9 @@ using BookingPlatform.Infrastructure.Services.Admin;
 using BookingPlatform.Infrastructure.Services.Images;
 using BookingPlatform.Infrastructure.Services.Images.B2CloudStorage;
 using Amazon.S3;
+using BookingPlatform.Application.Interfaces.HelperServices.Payment;
+using SendGrid;
+using Microsoft.Extensions.Options;
 
 namespace BookingPlatform.Infrastructure{
     public static class DependencyInjection
@@ -50,12 +53,36 @@ namespace BookingPlatform.Infrastructure{
             services.AddScoped<ICitiesService, CitiesService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             
-            services.AddScoped<IPaymentService, StripePaymentService>();
             services.AddScoped<IImageStorageService, B2ImageStorageService>();
+
+            services.Configure<StripeSettings>(configuration.GetSection("Stripe"));
+            services.AddScoped<IPaymentProviderService, StripePaymentService>();
             
+            services.AddSendGridEmailService(configuration);
+            
+            return services;
+        }
+
+        private static IServiceCollection AddSendGridEmailService(this IServiceCollection services, IConfiguration configuration)
+        {
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+
+            services.AddSingleton<ISendGridClient>(sp =>
+            {
+                var emailSettings = sp.GetRequiredService<IOptions<EmailSettings>>().Value;
+
+                if (string.IsNullOrWhiteSpace(emailSettings.ApiKey))
+                {
+                    throw new InvalidOperationException("SendGrid API key is not configured.");
+                }
+
+                return new SendGridClient(emailSettings.ApiKey);
+            });
+
             services.AddScoped<IEmailService, EmailService>();
+
             return services;
         }
 
