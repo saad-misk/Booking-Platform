@@ -2,8 +2,8 @@ namespace BookingPlatform.Domain.Enums
 {
     public enum PaymentMethod
     {
-        CreditCard,
+        Card,
         PayPal,
-        Stripe
+        BankTransfer
     }
 }
