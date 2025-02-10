@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    ports:
+      - "1433:1433"
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  bookingplatform-api:
+    build:
+      context: .
+      dockerfile: BookingPlatform.API/Dockerfile
+    container_name: bookingplatform-api
+    depends_on:
+      - sqlserver
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=${DATABASE_CONNECTION_STRING}
+      - JWT__Key=${JWT_SECRET}
+      - JWT__Issuer=${JWT_ISSUER}
+      - JWT__Audience=${JWT_AUDIENCE}
+      - EmailSettings__ApiKey=${EMAIL_API_KEY}
+      - EmailSettings__FromEmail=${EMAIL_FROM}
+      - EmailSettings__FromName=${EMAIL_FROM_NAME}
+      - Stripe__SecretKey=${STRIPE_SECRET}
+      - Stripe__Currency=${STRIPE_CURRENCY}
+      - B2__KeyId=${B2_KEY_ID}
+      - B2__ApplicationKey=${B2_APP_KEY}
+      - B2__BucketName=${B2_BUCKET}
+      - B2__Endpoint=${B2_ENDPOINT}
+    volumes:
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  sql_data:

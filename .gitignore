@@ -4,7 +4,7 @@ obj/
 
 # Ignore log files
 BookingPlatform.API/logs/
-*.log
+log.txt
 
 # Ignore user-specific files
 *.user
