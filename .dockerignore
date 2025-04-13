@@ -1,0 +1,8 @@
+bin/
+obj/
+*.md
+.git/
+.gitignore
+.env
+.vscode/
+node_modules/
