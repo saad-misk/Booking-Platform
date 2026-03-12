@@ -38,6 +38,12 @@ appsettings.Local.json
 # Ignore runtime configuration
 *.runtimeconfig.dev.json
 
+# Ignore environment files
+.env
+
+# Ignore secret replacement files
+replacements.txt
+
 # Ignore auto-generated EF migrations (optional, if tracked elsewhere)
 Migrations/
 
